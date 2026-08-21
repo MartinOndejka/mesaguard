@@ -560,14 +560,17 @@ function input(name, fallback) {
   return import_node_process.default.env[`INPUT_${name.replaceAll("-", "_").toUpperCase()}`]?.trim() || fallback;
 }
 function commandEscape(value) {
-  return value.replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A").replaceAll(":", "%3A").replaceAll(",", "%2C");
+  return value.replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A");
+}
+function propertyEscape(value) {
+  return commandEscape(value).replaceAll(":", "%3A").replaceAll(",", "%2C");
 }
 function annotation(finding) {
   const level = finding.severity === "high" ? "error" : finding.severity === "medium" ? "warning" : "notice";
   const properties = [
-    finding.file ? `file=${commandEscape(finding.file)}` : "",
+    finding.file ? `file=${propertyEscape(finding.file)}` : "",
     finding.line ? `line=${finding.line}` : "",
-    `title=${commandEscape(`${finding.ruleId}: ${finding.title}`)}`
+    `title=${propertyEscape(`${finding.ruleId}: ${finding.title}`)}`
   ].filter(Boolean).join(",");
   const message = commandEscape(`${finding.message} Migration action: ${finding.remediation}`);
   import_node_process.default.stdout.write(`::${level} ${properties}::${message}
@@ -579,7 +582,7 @@ async function setOutput(name, value) {
     await (0, import_promises2.appendFile)(outputFile, `${name}=${value}
 `, "utf8");
   } else {
-    import_node_process.default.stdout.write(`::set-output name=${commandEscape(name)}::${commandEscape(value)}
+    import_node_process.default.stdout.write(`::set-output name=${propertyEscape(name)}::${commandEscape(value)}
 `);
   }
 }

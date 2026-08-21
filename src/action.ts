@@ -15,7 +15,11 @@ function commandEscape(value: string): string {
   return value
     .replaceAll("%", "%25")
     .replaceAll("\r", "%0D")
-    .replaceAll("\n", "%0A")
+    .replaceAll("\n", "%0A");
+}
+
+function propertyEscape(value: string): string {
+  return commandEscape(value)
     .replaceAll(":", "%3A")
     .replaceAll(",", "%2C");
 }
@@ -23,9 +27,9 @@ function commandEscape(value: string): string {
 function annotation(finding: Finding): void {
   const level = finding.severity === "high" ? "error" : finding.severity === "medium" ? "warning" : "notice";
   const properties = [
-    finding.file ? `file=${commandEscape(finding.file)}` : "",
+    finding.file ? `file=${propertyEscape(finding.file)}` : "",
     finding.line ? `line=${finding.line}` : "",
-    `title=${commandEscape(`${finding.ruleId}: ${finding.title}`)}`,
+    `title=${propertyEscape(`${finding.ruleId}: ${finding.title}`)}`,
   ]
     .filter(Boolean)
     .join(",");
@@ -38,7 +42,7 @@ async function setOutput(name: string, value: string): Promise<void> {
   if (outputFile) {
     await appendFile(outputFile, `${name}=${value}\n`, "utf8");
   } else {
-    process.stdout.write(`::set-output name=${commandEscape(name)}::${commandEscape(value)}\n`);
+    process.stdout.write(`::set-output name=${propertyEscape(name)}::${commandEscape(value)}\n`);
   }
 }
 

@@ -15,7 +15,7 @@ export default defineConfig([
     entry: { action: "src/action.ts" },
     format: ["cjs"],
     platform: "node",
-    target: "node20",
+    target: "node24",
     bundle: true,
     sourcemap: true,
     outExtension: () => ({ js: ".cjs" }),
