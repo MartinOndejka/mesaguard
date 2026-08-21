@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#211b19">
+    <meta name="description" content="A practical o1js 3 and Mina Mesa migration checklist for verification keys, caches, transaction costs, JSON, signer eras, and protocol limits.">
+    <meta property="og:title" content="o1js 3 / Mina Mesa migration guide — MesaGuard">
+    <meta property="og:description" content="A cautious, source-linked checklist for moving an o1js 2.x project to o1js 3 and Mesa.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://martinondejka.github.io/mesaguard/o1js-3-migration-guide.html">
+    <link rel="canonical" href="https://martinondejka.github.io/mesaguard/o1js-3-migration-guide.html">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <title>o1js 3 / Mina Mesa migration guide — MesaGuard</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="nav wrap">
+      <a class="logo" href="./" aria-label="MesaGuard home"><span aria-hidden="true">M</span> MesaGuard</a>
+      <nav aria-label="Guide navigation"><a href="#checklist">Checklist</a><a href="#changes">Changes</a><a href="#sources">Sources</a></nav>
+      <a class="nav-cta" href="./#install">Run the preflight <span aria-hidden="true">→</span></a>
+    </header>
+    <main id="main" class="guide">
+      <header class="guide-hero wrap">
+        <p class="tag"><span></span> Updated 21 August 2026</p>
+        <h1>o1js 3 / Mesa<br><em>migration guide.</em></h1>
+        <p class="lede">o1js 3.0 is a protocol migration, not a routine dependency bump. Use this checklist to make the verification-key, cache, transaction, and signer changes reviewable before anything reaches a live network.</p>
+        <div class="guide-callout"><strong>The non-negotiable change</strong><p>The official o1js 3.0 release notes say every verification key changes and caches must be regenerated. Record deployed hashes and owners before replacing an artifact.</p></div>
+      </header>
+
+      <section class="guide-section wrap" id="checklist">
+        <div class="guide-aside"><p class="kicker">Order of operations</p><h2>A cautious migration sequence</h2></div>
+        <ol class="steps">
+          <li><span>01</span><div><h3>Freeze the starting point</h3><p>Use a dedicated branch. Record the current o1js and mina-signer versions, deployed verification-key hashes, cache paths, target network, and the people or systems that authorize upgrades.</p></div></li>
+          <li><span>02</span><div><h3>Generate a static inventory</h3><p>Run MesaGuard before changing dependencies. Keep its Markdown and JSON output with the migration work so removed APIs and committed artifacts remain visible during review.</p><pre><code>npx github:MartinOndejka/mesaguard scan . \
+  --format markdown \
+  --output mesaguard-report.md \
+  --fail-on high</code></pre></div></li>
+          <li><span>03</span><div><h3>Upgrade in isolation</h3><p>Move the relevant workspace to o1js 3, then compile and test from a clean install. Do not overwrite production caches or deployed-key records during this pass.</p></div></li>
+          <li><span>04</span><div><h3>Regenerate and map every key</h3><p>Compile each SmartContract and ZkProgram into an isolated cache. Map old and new verification-key hashes to their contracts, deployments, stored fixtures, APIs, and upgrade transactions. Treat every difference as expected by the protocol change but still requiring project review.</p></div></li>
+          <li><span>05</span><div><h3>Exercise transaction and signer paths</h3><p>Build representative transactions at boundary sizes, sign them in the intended era, serialize them, verify them, and submit only against an appropriate Mesa test environment. Include offline signers and wallet handoffs.</p></div></li>
+          <li><span>06</span><div><h3>Review the deployment plan</h3><p>Separate code migration from live key rotation. Confirm permissions, authorization, ordering, rollback assumptions, and downstream consumers before a production change. MesaGuard does not make this decision.</p></div></li>
+        </ol>
+      </section>
+
+      <section class="change-section" id="changes">
+        <div class="wrap">
+          <p class="kicker">Concrete breakpoints</p>
+          <h2>What to search for</h2>
+          <div class="change-grid">
+            <article><span>KEYS &amp; CACHES</span><h3>Everything is regenerated</h3><p>All verification keys change under Mesa. Locate committed `vk`, `pk`, SRS, step, wrap, and Lagrange artifacts as well as external object storage and deployed-key registries.</p></article>
+            <article><span>TRANSACTION COST</span><h3>The old cost model is gone</h3><p>Replace `setFeePerSnarkCost()` with `setFeePerAccountUpdate()`. Remove the floating-point `TransactionCost` constants and test against the 16-segment transaction limit.</p></article>
+            <article><span>JSON CONTRACT</span><h3>VerificationKey.toJSON changed</h3><p>The return value is now an object containing `data` and `hash`, not only a data string. Review types, fixtures, database fields, network payloads, and equality checks.</p></article>
+            <article><span>SIGNER ERA</span><h3>Mesa is now the default</h3><p>`mina-signer` v4 produces Mesa-format zkApp commands by default. Pin `era: 'berkeley'` only for a path that deliberately targets a legacy network, and test the full handoff.</p></article>
+            <article><span>PROTOCOL LIMITS</span><h3>Copied constants can lie</h3><p>State-field capacity rose from 8 to 32; action and event element limits rose from 100 to 1024. Find local copies, but verify behavior at meaningful boundaries rather than assuming more capacity is safe.</p></article>
+            <article><span>REMOVED GATES</span><h3>Cairo types disappeared</h3><p>`CairoClaim`, `CairoInstruction`, `CairoFlags`, and `CairoTransition` were removed. Any direct import needs redesign, not a renamed symbol.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section wrap">
+        <div class="guide-aside"><p class="kicker">Exit criteria</p><h2>What “ready” should mean</h2></div>
+        <div class="exit-list">
+          <p>Do not use a clean static scan as the exit criterion. Before approving a production migration, require evidence that:</p>
+          <ul>
+            <li>every relevant contract and program compiles under the chosen o1js 3 version;</li>
+            <li>new verification keys and caches have named owners and reviewed destinations;</li>
+            <li>proof generation and verification run with representative inputs;</li>
+            <li>transaction construction, signing, serialization, verification, and submission are tested end to end;</li>
+            <li>stored JSON and external consumers accept the new verification-key shape;</li>
+            <li>deployment authorization and rollback assumptions are explicitly reviewed.</li>
+          </ul>
+          <div class="guide-action"><p>Need the inventory turned into a bounded deliverable?</p><a class="button primary" href="https://github.com/MartinOndejka/mesaguard/issues/new?template=migration-help.yml">Request migration help <span>→</span></a></div>
+        </div>
+      </section>
+
+      <section class="sources" id="sources">
+        <div class="wrap"><p class="kicker">Primary evidence</p><h2>Sources</h2><ul><li><a href="https://github.com/o1-labs/o1js/blob/main/CHANGELOG.md#300---2026-08-18">Official o1js 3.0.0 changelog and linked implementation pull requests</a></li><li><a href="https://github.com/o1-labs/o1js/releases/tag/v3.0.0">Official o1js v3.0.0 GitHub release</a></li><li><a href="https://github.com/MartinOndejka/mesaguard/blob/main/docs/rules.md">MesaGuard rule evidence and false-positive boundaries</a></li></ul><p class="source-note">This guide is operational tooling documentation, not a security audit, deployment approval, or statement from O(1) Labs or Mina Foundation.</p></div>
+      </section>
+    </main>
+    <footer><div class="wrap footer-grid"><a class="logo invert" href="./"><span>M</span> MesaGuard</a><p>Open migration tooling for o1js and Mina Mesa.</p><div><a href="./">Product</a><a href="https://github.com/MartinOndejka/mesaguard">Source</a><a href="https://github.com/MartinOndejka/mesaguard/blob/main/docs/rules.md">Rules</a></div><small>MIT licensed · Not affiliated with O(1) Labs or Mina Foundation · No security certification implied</small></div></footer>
+  </body>
+</html>

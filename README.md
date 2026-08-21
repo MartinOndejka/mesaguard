@@ -4,6 +4,8 @@
 
 MesaGuard is a local CLI and GitHub Action that inventories the concrete migration hazards in the official [o1js 3.0.0 change set](https://github.com/o1-labs/o1js/blob/main/CHANGELOG.md#300---2026-08-18). It produces reviewable text, Markdown, and JSON reports without uploading source code.
 
+Start with the [practical o1js 3 / Mesa migration guide](https://martinondejka.github.io/mesaguard/o1js-3-migration-guide.html) if you need the wider key, cache, testing, and deployment-review sequence around the static scan.
+
 > MesaGuard is a migration preflight, not a security audit. A clean report does not prove circuit soundness, key safety, transaction validity, or deployment readiness.
 
 ## Why now
