@@ -7,5 +7,6 @@ declare const verificationKey: VerificationKey;
 transaction.setFeePerSnarkCost(TransactionCost.PROOF_COST);
 const encoded: string = verificationKey.toJSON();
 const signer = new Client({ network: "mainnet" });
+signer.signZkappCommand({} as never, "private-key");
 
 export { encoded, signer };

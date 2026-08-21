@@ -103,6 +103,13 @@ export function signerFindings(relativePath: string, contents: string): Finding[
   if (!/(?:from\s+["']mina-signer["']|require\s*\(\s*["']mina-signer["'])/.test(contents)) {
     return [];
   }
+  if (
+    !/\.(?:signZkappCommand|verifyZkappCommand|getZkappCommandCommitments(?:FromJSON)?|signTransaction|verifyTransaction)\s*\(/.test(
+      contents,
+    )
+  ) {
+    return [];
+  }
 
   const findings: Finding[] = [];
   const constructorPattern = /new\s+(?:Client|MinaSigner\.Client)\s*\(([^)]*)\)/gs;
@@ -129,7 +136,7 @@ export function signerFindings(relativePath: string, contents: string): Finding[
         severity: "medium",
         title: "mina-signer default era changes in v4",
         message:
-          "mina-signer v4 produces Mesa-format zkApp commands by default; this constructor does not state an era.",
+          "This file signs or verifies transactions, and mina-signer v4 produces Mesa-format zkApp commands by default; the constructor does not state an era.",
         remediation:
           "Exercise signing and submission end to end. Add era: 'berkeley' only if this path intentionally targets a legacy network.",
         file: relativePath,

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import {
+  VERSION,
   scanProject,
   toJson,
   toMarkdown,
   toText
-} from "./chunk-462ZLV4K.js";
+} from "./chunk-PTGAXFXT.js";
 
 // src/cli.ts
 import { realpathSync } from "fs";
@@ -12,7 +13,6 @@ import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import process from "process";
 import { fileURLToPath } from "url";
-var VERSION = "0.1.0";
 var HELP = `MesaGuard ${VERSION} \u2014 preflight an o1js project for o1js 3 / Mesa
 
 Usage:

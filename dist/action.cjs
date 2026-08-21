@@ -169,6 +169,11 @@ function signerFindings(relativePath, contents) {
   if (!/(?:from\s+["']mina-signer["']|require\s*\(\s*["']mina-signer["'])/.test(contents)) {
     return [];
   }
+  if (!/\.(?:signZkappCommand|verifyZkappCommand|getZkappCommandCommitments(?:FromJSON)?|signTransaction|verifyTransaction)\s*\(/.test(
+    contents
+  )) {
+    return [];
+  }
   const findings = [];
   const constructorPattern = /new\s+(?:Client|MinaSigner\.Client)\s*\(([^)]*)\)/gs;
   for (const match of contents.matchAll(constructorPattern)) {
@@ -191,7 +196,7 @@ function signerFindings(relativePath, contents) {
         ruleId: "MG005",
         severity: "medium",
         title: "mina-signer default era changes in v4",
-        message: "mina-signer v4 produces Mesa-format zkApp commands by default; this constructor does not state an era.",
+        message: "This file signs or verifies transactions, and mina-signer v4 produces Mesa-format zkApp commands by default; the constructor does not state an era.",
         remediation: "Exercise signing and submission end to end. Add era: 'berkeley' only if this path intentionally targets a legacy network.",
         file: relativePath,
         line,
@@ -201,6 +206,9 @@ function signerFindings(relativePath, contents) {
   }
   return findings;
 }
+
+// src/version.ts
+var VERSION = "0.1.1";
 
 // src/scanner.ts
 var DEFAULT_MAX_FILE_BYTES = 2 * 1024 * 1024;
@@ -531,7 +539,7 @@ async function scanProject(projectPath, options = {}) {
   };
   return {
     schemaVersion: 1,
-    tool: { name: "MesaGuard", version: options.toolVersion ?? "0.1.0" },
+    tool: { name: "MesaGuard", version: options.toolVersion ?? VERSION },
     generatedAt: (options.now ?? /* @__PURE__ */ new Date()).toISOString(),
     project: {
       name: typeof manifest.name === "string" ? manifest.name : import_node_path2.default.basename(root),
@@ -594,7 +602,7 @@ async function run() {
     if (!["high", "medium", "low", "none"].includes(failOn)) {
       throw new Error(`Invalid fail-on input '${failOn}'.`);
     }
-    const report = await scanProject(projectPath, { toolVersion: "0.1.0" });
+    const report = await scanProject(projectPath, { toolVersion: VERSION });
     const markdown = toMarkdown(report);
     await (0, import_promises2.mkdir)(import_node_path3.default.dirname(import_node_path3.default.resolve(output)), { recursive: true });
     await (0, import_promises2.writeFile)(output, markdown, "utf8");

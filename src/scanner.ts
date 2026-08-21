@@ -8,6 +8,7 @@ import type {
   ScanReport,
   Severity,
 } from "./types.ts";
+import { VERSION } from "./version.ts";
 
 const DEFAULT_MAX_FILE_BYTES = 2 * 1024 * 1024;
 const SOURCE_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"]);
@@ -378,7 +379,7 @@ export async function scanProject(projectPath: string, options: ScanOptions = {}
 
   return {
     schemaVersion: 1,
-    tool: { name: "MesaGuard", version: options.toolVersion ?? "0.1.0" },
+    tool: { name: "MesaGuard", version: options.toolVersion ?? VERSION },
     generatedAt: (options.now ?? new Date()).toISOString(),
     project: {
       name: typeof manifest.name === "string" ? manifest.name : path.basename(root),

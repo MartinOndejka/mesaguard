@@ -36,7 +36,7 @@ Rules target the official [o1js 3.0.0 / Mesa change set](https://github.com/o1-l
 
 **Review:** Confirm the network/endpoint target for every signing path and test serialization through submission.
 
-**Boundary:** MesaGuard inspects direct `Client` construction only. Factories, aliases, dependency injection, or wrappers require manual review.
+**Boundary:** MesaGuard reports direct `Client` construction only in files that also call transaction or zkApp signing/verification methods. Key derivation, message signing, and payment-only files are excluded. Factories, aliases, dependency injection, and cross-file wrappers require manual review.
 
 ## MG006 — removed Cairo gates
 

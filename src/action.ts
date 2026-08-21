@@ -4,6 +4,7 @@ import process from "node:process";
 import { toJson, toMarkdown } from "./report.ts";
 import { scanProject } from "./scanner.ts";
 import type { Finding, Severity } from "./types.ts";
+import { VERSION } from "./version.ts";
 
 const rank: Record<Severity, number> = { high: 3, medium: 2, low: 1, info: 0 };
 
@@ -54,7 +55,7 @@ async function run(): Promise<void> {
     if (!["high", "medium", "low", "none"].includes(failOn)) {
       throw new Error(`Invalid fail-on input '${failOn}'.`);
     }
-    const report = await scanProject(projectPath, { toolVersion: "0.1.0" });
+    const report = await scanProject(projectPath, { toolVersion: VERSION });
     const markdown = toMarkdown(report);
 
     await mkdir(path.dirname(path.resolve(output)), { recursive: true });

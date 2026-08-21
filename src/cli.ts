@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { toJson, toMarkdown, toText } from "./report.ts";
 import { scanProject } from "./scanner.ts";
 import type { ScanReport, Severity } from "./types.ts";
+import { VERSION } from "./version.ts";
 
 type Format = "text" | "markdown" | "json";
 type FailOn = Severity | "none";
@@ -18,8 +19,6 @@ interface Arguments {
   failOn: FailOn;
   color: boolean;
 }
-
-const VERSION = "0.1.0";
 
 const HELP = `MesaGuard ${VERSION} — preflight an o1js project for o1js 3 / Mesa
 

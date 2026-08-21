@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { scanProject } from "../src/scanner.ts";
 import { toJson, toMarkdown, toText } from "../src/report.ts";
+import { signerFindings } from "../src/rules.ts";
 
 describe("scanProject", () => {
   it("finds o1js 3 migration blockers and review points", async () => {
@@ -41,6 +42,15 @@ describe("scanProject", () => {
         expect.objectContaining({ ruleId: "MG007", file: "public/cache/wrap-vk-contract.txt" }),
       ]),
     );
+  });
+
+  it("does not flag mina-signer clients used only for key derivation", () => {
+    const source = `
+      import { Client } from 'mina-signer';
+      const client = new Client({ network: 'mainnet' });
+      export const publicKey = client.derivePublicKey('private-key');
+    `;
+    expect(signerFindings("keygen.ts", source)).toEqual([]);
   });
 
   it("renders deterministic human and machine reports", async () => {

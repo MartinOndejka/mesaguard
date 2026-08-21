@@ -1,6 +1,6 @@
 {
   "name": "mesaguard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Preflight o1js projects for the Mesa / o1js 3 migration",
   "type": "module",
   "license": "MIT",

@@ -97,6 +97,9 @@ function toJson(report) {
 `;
 }
 
+// src/version.ts
+var VERSION = "0.1.1";
+
 // src/scanner.ts
 import { readFile, readdir, stat } from "fs/promises";
 import path2 from "path";
@@ -182,6 +185,11 @@ function signerFindings(relativePath, contents) {
   if (!/(?:from\s+["']mina-signer["']|require\s*\(\s*["']mina-signer["'])/.test(contents)) {
     return [];
   }
+  if (!/\.(?:signZkappCommand|verifyZkappCommand|getZkappCommandCommitments(?:FromJSON)?|signTransaction|verifyTransaction)\s*\(/.test(
+    contents
+  )) {
+    return [];
+  }
   const findings = [];
   const constructorPattern = /new\s+(?:Client|MinaSigner\.Client)\s*\(([^)]*)\)/gs;
   for (const match of contents.matchAll(constructorPattern)) {
@@ -204,7 +212,7 @@ function signerFindings(relativePath, contents) {
         ruleId: "MG005",
         severity: "medium",
         title: "mina-signer default era changes in v4",
-        message: "mina-signer v4 produces Mesa-format zkApp commands by default; this constructor does not state an era.",
+        message: "This file signs or verifies transactions, and mina-signer v4 produces Mesa-format zkApp commands by default; the constructor does not state an era.",
         remediation: "Exercise signing and submission end to end. Add era: 'berkeley' only if this path intentionally targets a legacy network.",
         file: relativePath,
         line,
@@ -544,7 +552,7 @@ async function scanProject(projectPath, options = {}) {
   };
   return {
     schemaVersion: 1,
-    tool: { name: "MesaGuard", version: options.toolVersion ?? "0.1.0" },
+    tool: { name: "MesaGuard", version: options.toolVersion ?? VERSION },
     generatedAt: (options.now ?? /* @__PURE__ */ new Date()).toISOString(),
     project: {
       name: typeof manifest.name === "string" ? manifest.name : path2.basename(root),
@@ -571,6 +579,7 @@ export {
   toText,
   toMarkdown,
   toJson,
+  VERSION,
   scanProject
 };
-//# sourceMappingURL=chunk-462ZLV4K.js.map
+//# sourceMappingURL=chunk-PTGAXFXT.js.map
