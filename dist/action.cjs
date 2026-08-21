@@ -432,7 +432,7 @@ async function staleCacheFinding(root) {
       const inKeyDirectory = components.some(
         (component) => ["keys", "proving-keys", "verification-keys"].includes(component)
       );
-      const keyLike = /(?:^|[-_.])(?:vk|pk|srs|lagrange|step|wrap)(?:[-_.]|$)/i.test(entry.name);
+      const keyLike = /(?:^|[-_.])(?:vk|pk|srs|lagrange|step|wrap)(?:[-_.]|$)/i.test(entry.name) || /(?:vk|pk)\.[^.]+$/i.test(entry.name);
       const namedKey = /(?:verification|proving)[-_.]?key/i.test(entry.name);
       const nonSourceKey = namedKey && !SOURCE_EXTENSIONS.has(import_node_path2.default.extname(basename));
       if (inCache && keyLike || inKeyDirectory && (keyLike || namedKey) || nonSourceKey) {
