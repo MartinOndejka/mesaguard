@@ -1,0 +1,57 @@
+name: Request migration help
+description: Ask for a fixed-scope o1js 3 migration readout or patch
+title: "help: "
+labels: [migration-help]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to check fit and scope. Do not post source code, secrets, private paths, key material, credentials, customer data, or undisclosed vulnerabilities. Submitting this form is not a purchase or a guarantee that work will be accepted.
+  - type: dropdown
+    id: service
+    attributes:
+      label: Requested service
+      options:
+        - Migration readout (€149)
+        - Migration patch (€299)
+        - Not sure yet
+    validations:
+      required: true
+  - type: input
+    id: repository
+    attributes:
+      label: Public repository or public project page
+      description: Leave blank for a private project; do not paste a private URL or access token.
+      placeholder: https://github.com/owner/repository
+  - type: input
+    id: version
+    attributes:
+      label: Current o1js version
+      placeholder: 2.14.0
+    validations:
+      required: true
+  - type: dropdown
+    id: shape
+    attributes:
+      label: Project shape
+      options:
+        - Single package
+        - Small workspace (2–5 packages)
+        - Large monorepo
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What outcome do you need?
+      description: Describe migration blockers, target timing, and whether verification keys are deployed. Do not include sensitive implementation details.
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Safety check
+      options:
+        - label: I have not included secrets, key material, private source, credentials, or an undisclosed vulnerability.
+          required: true

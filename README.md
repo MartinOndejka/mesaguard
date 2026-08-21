@@ -52,6 +52,15 @@ jobs:
 
 The Action adds file annotations, a job summary, `mesaguard-report.md`, and a JSON report beside it. It requires only `contents: read`.
 
+## Migration help
+
+The scanner is free and open source. If the static inventory is only the first step, two fixed-scope services are available:
+
+- **Migration readout — €149:** a manual review of one TypeScript workspace, with an o1js 3 change map, key/cache inventory, and prioritized next steps delivered as a Markdown report.
+- **Migration patch — €299:** the readout plus a pull request for one standard public repository. Deployment coordination, production key rotation, audits, and large monorepos are quoted separately.
+
+[Request migration help](https://github.com/MartinOndejka/mesaguard/issues/new?template=migration-help.yml) without posting source, secrets, private paths, or key material. Scope and payment are confirmed before work starts. These are launch prices and may change as the service is validated.
+
 ## What v0.1 checks
 
 | Rule | Severity | Migration signal |
