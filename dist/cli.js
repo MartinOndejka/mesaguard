@@ -7,6 +7,7 @@ import {
 } from "./chunk-462ZLV4K.js";
 
 // src/cli.ts
+import { realpathSync } from "fs";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import process from "process";
@@ -132,7 +133,13 @@ ${HELP}`);
     return 2;
   }
 }
-var isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+var isDirectRun = false;
+try {
+  isDirectRun = Boolean(
+    process.argv[1] && fileURLToPath(import.meta.url) === realpathSync(process.argv[1])
+  );
+} catch {
+}
 if (isDirectRun) {
   process.exitCode = await run(process.argv.slice(2));
 }

@@ -1,3 +1,4 @@
+import { realpathSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -146,7 +147,14 @@ export async function run(argv: string[]): Promise<number> {
   }
 }
 
-const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+let isDirectRun = false;
+try {
+  isDirectRun = Boolean(
+    process.argv[1] && fileURLToPath(import.meta.url) === realpathSync(process.argv[1]),
+  );
+} catch {
+  // Imported library usage and unusual launchers should not run the CLI implicitly.
+}
 if (isDirectRun) {
   process.exitCode = await run(process.argv.slice(2));
 }
