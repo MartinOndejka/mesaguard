@@ -1,0 +1,31 @@
+name: MesaGuard
+description: Preflight an o1js project for the o1js 3 / Mina Mesa migration
+author: Martin Ondejka
+branding:
+  icon: shield
+  color: green
+inputs:
+  path:
+    description: Path to the package containing the o1js project
+    required: false
+    default: .
+  fail-on:
+    description: Lowest severity that fails the check (high, medium, low, or none)
+    required: false
+    default: high
+  output:
+    description: Markdown report path; a JSON report is written beside it
+    required: false
+    default: mesaguard-report.md
+outputs:
+  verdict:
+    description: blocked, review, or ready
+  high:
+    description: Number of high-severity migration findings
+  medium:
+    description: Number of medium-severity migration findings
+  report:
+    description: Path to the Markdown report
+runs:
+  using: node20
+  main: dist/action.cjs

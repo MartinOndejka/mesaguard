@@ -1,0 +1,55 @@
+{
+  "name": "mesaguard",
+  "version": "0.1.0",
+  "description": "Preflight o1js projects for the Mesa / o1js 3 migration",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "mesaguard": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartinOndejka/mesaguard.git"
+  },
+  "homepage": "https://martinondejka.github.io/mesaguard/",
+  "bugs": {
+    "url": "https://github.com/MartinOndejka/mesaguard/issues"
+  },
+  "keywords": [
+    "o1js",
+    "mina",
+    "mesa",
+    "zkapp",
+    "migration",
+    "github-action"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc --noEmit && tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run test && npm run build && node dist/cli.js scan test/fixtures/needs-migration --format text --fail-on none",
+    "prepack": "npm run check"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1"
+  }
+}

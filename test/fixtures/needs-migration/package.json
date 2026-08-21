@@ -1,0 +1,8 @@
+{
+  "name": "legacy-zkapp",
+  "version": "1.0.0",
+  "dependencies": {
+    "o1js": "^2.14.0",
+    "mina-signer": "^3.1.0"
+  }
+}

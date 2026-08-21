@@ -1,0 +1,7 @@
+{
+  "name": "mesa-zkapp",
+  "version": "1.0.0",
+  "dependencies": {
+    "o1js": "^3.0.0"
+  }
+}

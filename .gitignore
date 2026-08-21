@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+*.log
+mesaguard-report.md
+mesaguard-report.md.json
+coverage/
+reports/

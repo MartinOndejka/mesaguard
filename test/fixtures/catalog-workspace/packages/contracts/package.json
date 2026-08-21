@@ -1,0 +1,7 @@
+{
+  "name": "catalog-contracts",
+  "version": "1.0.0",
+  "dependencies": {
+    "o1js": "catalog:"
+  }
+}

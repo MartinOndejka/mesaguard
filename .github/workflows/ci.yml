@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Ensure the committed Action bundle is current
+        run: git diff --exit-code -- dist/action.cjs dist/action.cjs.map
+      - name: Exercise the local Action
+        uses: ./
+        continue-on-error: true
+        with:
+          path: test/fixtures/needs-migration
+          fail-on: high

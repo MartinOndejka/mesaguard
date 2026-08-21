@@ -1,0 +1,33 @@
+name: Migration question
+description: Share an o1js 3 / Mesa migration case that MesaGuard missed or explained poorly
+title: "migration: "
+labels: [migration-feedback]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the migration inventory. Do not paste private source code, keys, secrets, or an undisclosed vulnerability.
+  - type: input
+    id: repository
+    attributes:
+      label: Public repository or minimal reproduction
+      placeholder: https://github.com/owner/repository
+  - type: input
+    id: versions
+    attributes:
+      label: o1js version before and after
+      placeholder: 2.14.0 → 3.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What blocked or surprised the migration?
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant MesaGuard output
+      description: Redact repository paths or other sensitive details.
+      render: shell
